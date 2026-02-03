@@ -161,8 +161,9 @@ func main() {
 			getEnvString("ua", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"),
 			"User-Agent")
 
+		address = flag.String("address", getEnvString("address", ""), "源IP地址")
 		ipv4Only = flag.Bool("4", getEnvBool("4", false), "仅 IPv4")
-		ipv6Only = flag.Bool("6", getEnvBool("4", false), "仅 IPv6")
+		ipv6Only = flag.Bool("6", getEnvBool("6", false), "仅 IPv6")
 		rateStr  = flag.String("rate", getEnvString("rate", ""), "限速，如 1.5m")
 	)
 	flag.Parse()
@@ -180,6 +181,16 @@ func main() {
 		return
 	}
 
+	var localAddr *net.TCPAddr
+	if *address != "" {
+		ip := net.ParseIP(*address)
+		if ip == nil {
+			fmt.Printf("[错误] address 无效: %s\n", *address)
+			return
+		}
+		localAddr = &net.TCPAddr{IP: ip}
+	}
+
 	rateLimit := getEnvBytes("rate", 0)
 	if *rateStr != "" {
 		if r, err := parseBytes(*rateStr); err == nil {
@@ -190,7 +201,7 @@ func main() {
 	// 构造 Transport
 	var transport http.RoundTripper
 	{
-		dialer := &net.Dialer{}
+		dialer := &net.Dialer{LocalAddr: localAddr}
 		transport = &http.Transport{
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				if *ipv4Only {

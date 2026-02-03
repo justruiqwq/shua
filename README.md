@@ -23,6 +23,7 @@ docker run -d \
 | w     | 64                                                                                                              | 创建多少个工作进程(线程) |
 | i     | 0s                                                                                                              | 每次请求后的休息时长    |
 | ua    | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 | 自定义的ua请求头     |
+| address | 无                                                                                                               | 源IP地址         |
 | 4     | 否                                                                                                               | 仅IPv4         |
 | 6     | 否                                                                                                               | 仅IPv6         |
 | rate  | 无                                                                                                               | 限速 (如23.33m)  |
