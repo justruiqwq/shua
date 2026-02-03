@@ -188,6 +188,14 @@ func main() {
 			fmt.Printf("[错误] address 无效: %s\n", *address)
 			return
 		}
+		if *ipv4Only && ip.To4() == nil {
+			fmt.Printf("[错误] address 需要 IPv4: %s\n", *address)
+			return
+		}
+		if *ipv6Only && ip.To4() != nil {
+			fmt.Printf("[错误] address 需要 IPv6: %s\n", *address)
+			return
+		}
 		localAddr = &net.TCPAddr{IP: ip}
 	}
 
